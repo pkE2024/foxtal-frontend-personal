@@ -4,10 +4,11 @@ import clsx from 'clsx';
 // import { addItem } from 'components/cart/actions';
 import { Product, ProductVariant } from 'lib/shopify/types';
 import { useSearchParams } from 'next/navigation';
-import { useFormStatus } from 'react-dom';
 import { useAppDispatch } from 'store/hooks';
 import { cartActions } from 'store/actions/cart.action';
 import { v4 as uuidv4 } from 'uuid';
+import { trackEvent } from 'utils/mixpanel';
+import { useFormStatus } from 'react-dom';
 
 function SubmitButton({
   availableForSale,
@@ -65,6 +66,16 @@ function SubmitButton({
             tempId: uuidv4()
           })
         );
+        trackEvent('Add To Cart', {
+          Product_Name: product.title,
+          Product_Url: '',
+          Product_Price: product?.priceRange?.maxVariantPrice?.amount,
+          Price_Currency: product?.priceRange?.maxVariantPrice?.currencyCode,
+          Source: '',
+          Category: '',
+          Tags: product.tags,
+          Variant_SKU: ''
+        });
       }}
       aria-label="Add to cart"
       aria-disabled={pending}
@@ -87,7 +98,7 @@ export function AddToCartButton({
   variants: any[];
   availableForSale: boolean;
   buttonClasses: string;
-  product: Product;
+  product: any;
 }) {
   const searchParams = useSearchParams();
   const defaultVariantId = variants[0]?.id;

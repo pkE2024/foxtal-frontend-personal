@@ -14,7 +14,7 @@ import { EditItemQuantityButton } from './edit-item-quantity-button';
 import OpenCart from './open-cart';
 import { ShoppingBagIcon } from '@heroicons/react/24/outline';
 import { useAppSelector } from 'store/hooks';
-
+import { trackEvent } from 'utils/mixpanel';
 import { useCart } from '@/lib/hooks/use-cart';
 
 type MerchandiseSearchParams = {
@@ -184,12 +184,16 @@ export default function CartModal({ cart }: { cart: Cart | undefined }) {
                       />
                     </div>
                   </div>
-                  <a
+                  <Link
                     href={carts.checkoutUrl}
                     className="block w-full  bg-black p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      trackEvent('Checkout Started');
+                    }}
                   >
                     Proceed to Checkout
-                  </a>
+                  </Link>
                 </div>
               )}
             </Dialog.Panel>

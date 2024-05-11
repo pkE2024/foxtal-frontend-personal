@@ -1,6 +1,8 @@
+'use client';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import { trackEvent } from 'utils/mixpanel';
 
 const ProductCard = ({ product }: { product: any }) => {
   return (
@@ -72,7 +74,21 @@ const ProductCard = ({ product }: { product: any }) => {
         </div>
       </div>
       <div className="flex w-full items-center justify-center overflow-hidden rounded-b-sm bg-black p-4">
-        <Link href="/products/purify-glow-cleanser-mask">
+        <Link
+          href="/products/purify-glow-cleanser-mask"
+          onClick={() => {
+            trackEvent('Add to cart', {
+              Product_Name: product.title,
+              Product_Url: '',
+              Product_Price: product?.priceRange?.maxVariantPrice?.amount,
+              Price_Currency: product?.priceRange?.maxVariantPrice?.currencyCode,
+              Source: '',
+              Category: '',
+              Tags: product.tags,
+              Variant_SKU: ''
+            });
+          }}
+        >
           <span className=" flex self-center text-center text-[8px] font-semibold uppercase text-white md:text-xs">
             Add to cart
           </span>
